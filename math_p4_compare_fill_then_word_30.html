@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คณิต ป.4 — เปรียบเทียบมากกว่า/น้อยกว่า + เติมตัวแปร | Kru Pai Classroom</title>
+<style>
+  :root{
+    --primary:#ef4444; /* red */
+    --ink:#0f172a;
+    --muted:#6b7280;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --accent:#f59e0b;
+    --success:#16a34a;
+    --danger:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;background:var(--bg);color:var(--ink)}
+  header{position:sticky;top:0;background:#fff;border-bottom:3px solid var(--primary);padding:10px 16px;display:flex;align-items:center;gap:12px;z-index:10}
+  header .badge{background:var(--primary);color:white;padding:6px 12px;border-radius:999px;font-weight:800}
+  header h1{font-size:16px;margin:0;line-height:1.2}
+  main{max-width:980px;margin:0 auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  .cover{padding:28px;text-align:center;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center}
+  .cover h2{font-size:28px;margin:0}
+  .cover p{color:var(--muted);margin:0}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  input[type=text], input[type=number]{font-size:18px;padding:10px 14px;border-radius:12px;border:2px solid var(--border);min-width:240px}
+  input[type=text]:focus, input[type=number]:focus{outline:none;border-color:var(--primary)}
+  button{font-size:18px;padding:12px 18px;border-radius:12px;border:none;cursor:pointer;font-weight:800}
+  .btn{background:var(--primary);color:white}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-outline{background:white;border:2px solid var(--primary);color:var(--primary)}
+  .quiz{padding:18px}
+  .sectionHead{margin:16px 0 8px 0;padding:12px 14px;border-left:8px solid var(--primary);background:#fff1f2;border-radius:10px;font-weight:900}
+  .q{border:1px solid var(--border);border-radius:16px;padding:14px;margin:10px 0}
+  .q h3{margin:0 0 10px 0;font-size:18px}
+  .explain{margin-top:8px;color:#374151;font-size:14px}
+  .footer{display:flex;justify-content:space-between;align-items:center;padding:12px}
+  .pill{padding:6px 10px;border-radius:999px;background:#fee2e2;color:#991b1b;font-weight:700}
+  .result{padding:28px;text-align:center}
+  .big{font-size:46px;font-weight:900;margin:0}
+  .pass{color:var(--success)}
+  .fail{color:var(--danger)}
+  .tag{display:inline-block;background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:8px}
+  .history{margin-top:18px;border-top:1px dashed #e5e7eb;padding-top:14px;text-align:left}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left;font-size:14px}
+  th{background:#fff7f7}
+</style>
+</head>
+<body>
+<header>
+  <span class="badge">Kru Pai Classroom</span>
+  <h1>คณิต ป.4 — เปรียบเทียบมากกว่า/น้อยกว่า + เติมตัวแปร • 30 ข้อ</h1>
+</header>
+
+<main>
+  <section id="welcome" class="card cover">
+    <h2>แบบฝึก: ฝึกอ่านโจทย์ “มากกว่า/น้อยกว่า” + สมการตัวแปร</h2>
+    <p>ตอนที่ 1: เติมตัวเลข (10 ข้อ) • ตอนที่ 2: โจทย์เปรียบเทียบ (20 ข้อ) • ผ่านเกณฑ์ 80%</p>
+    <div class="row">
+      <input id="playerName" type="text" placeholder="พิมพ์ชื่อของหนูที่นี่">
+      <button class="btn" onclick="startQuiz()">เริ่มทำแบบทดสอบ</button>
+    </div>
+    <p class="pill">บันทึกประวัติ: จะเก็บครั้งที่เล่นและคะแนนของแต่ละชื่อ</p>
+  </section>
+
+  <section id="quizBox" class="card quiz" style="display:none"></section>
+  <section id="resultBox" class="card result" style="display:none"></section>
+</main>
+
+<script>
+// ============== DATA ==============
+// Section A: เติมตัวเลข 10 ข้อ (หา a,b,c... เป็นจำนวนเต็มบวก)
+const FILL = [
+  {t:"1) 200 − a = 50  ⇒  a = ?", a:150},
+  {t:"2) b + 375 = 920  ⇒  b = ?", a:545},
+  {t:"3) 4 × c = 732  ⇒  c = ?", a:183},
+  {t:"4) d − 145 = 275  ⇒  d = ?", a:420},
+  {t:"5) 3 × e + 120 = 600  ⇒  e = ?", a:(600-120)/3},
+  {t:"6) f ÷ 8 = 47  ⇒  f = ?", a:376},
+  {t:"7) 980 = g + 425  ⇒  g = ?", a:555},
+  {t:"8) 7h = 1,505  ⇒  h = ?", a:215},
+  {t:"9) 2k + 90 = 450  ⇒  k = ?", a:(450-90)/2},
+  {t:"10) m − 2,345 = 1,780  ⇒  m = ?", a:4125}
+];
+
+// Section B: โจทย์เปรียบเทียบ 20 ข้อ (คำตอบเป็น "จำนวนทั้งหมด" หรือ "ค่าที่ถาม")
+const WORD = [
+  // รูปแบบ: more-than sum / ask total
+  {t:"11) พ่อมีเงิน 500 บาท แม่มีมากกว่าพ่อ 350 บาท พ่อและแม่มีเงินรวมกันกี่บาท?", a:500+(500+350)},
+  {t:"12) พี่มีลูกแก้ว 420 ลูก น้องมีน้อยกว่าพี่ 135 ลูก ทั้งสองคนมีลูกแก้วรวมกันกี่ลูก?", a:420+(420-135)},
+  {t:"13) ป้าซื้อผลไม้ ส้ม 275 ผล แอปเปิลมีมากกว่าส้ม 180 ผล ป้าซื้อผลไม้รวมกี่ผล?", a:275+(275+180)},
+  {t:"14) แป้งมีสติ๊กเกอร์ 368 ดวง ฝ้ายมีมากกว่าแป้ง 127 ดวง ทั้งสองคนมีรวมกันกี่ดวง?", a:368+(368+127)},
+  {t:"15) รถคันที่ 1 มีผู้โดยสาร 48 คน รถคันที่ 2 มีมากกว่าคันที่ 1 อยู่ 26 คน ทั้งสองคันรวมกันกี่คน?", a:48+(48+26)},
+  // ถามหาค่าของคนที่มากกว่า/น้อยกว่า
+  {t:"16) น้องมีเงิน 265 บาท พี่มีมากกว่าน้อง 190 บาท พี่มีเงินกี่บาท?", a:265+190},
+  {t:"17) ชั้นวางหนังสือตู้ A มี 560 เล่ม ตู้ B มีน้อยกว่าตู้ A 145 เล่ม ตู้ B มีกี่เล่ม?", a:560-145},
+  {t:"18) กล่องหนึ่งมีดินสอ 375 แท่ง อีกกล่องมีมากกว่าอยู่ 225 แท่ง กล่องที่มากกว่ามีกี่แท่ง?", a:375+225},
+  {t:"19) งานวิ่งการกุศล ชายวิ่งได้ 1,280 คน หญิงมากกว่าชาย 160 คน หญิงมีกี่คน?", a:1280+160},
+  {t:"20) สวน A ปลูกต้นไม้ 860 ต้น สวน B ปลูกน้อยกว่าสวน A 215 ต้น สวน B ปลูกกี่ต้น?", a:860-215},
+  // รวม/ต่าง
+  {t:"21) ต้นมีการ์ด 512 ใบ ปลายมีมากกว่าต้น 188 ใบ ทั้งสองรวมกันกี่ใบ?", a:512+(512+188)},
+  {t:"22) นัทมีเหรียญ 735 เหรียญ โน่มีน้อยกว่านัท 220 เหรียญ ทั้งสองรวมกันกี่เหรียญ?", a:735+(735-220)},
+  {t:"23) โรงเรียน A มีนักเรียน 1,450 คน โรงเรียน B มีมากกว่าโรงเรียน A 175 คน โรงเรียน B มีกี่คน?", a:1450+175},
+  {t:"24) ร้านหนึ่งขายขนมปังได้ 980 ชิ้น ร้านถัดไปขายน้อยกว่า 245 ชิ้น ร้านถัดไปขายได้กี่ชิ้น?", a:980-245},
+  {t:"25) โจ้มีเงิน 640 บาท แจนมีมากกว่าโจ้ 85 บาท แจนมีเงินกี่บาท?", a:640+85},
+  // ซ้อนสองชั้นเล็กน้อย (แต่ยัง ป.4 ได้)
+  {t:"26) ก้องมีสมุด 280 เล่ม เก่งมีมากกว่าก้อง 90 เล่ม เกรซมีมากกว่าเก่ง 70 เล่ม เกรซมีกี่เล่ม?", a:280+90+70},
+  {t:"27) ต้นไม้ในแปลงแรก 420 ต้น แปลงสองน้อยกว่าต้นแรก 140 ต้น แปลงสามมากกว่าแปลงสอง 60 ต้น แปลงสามมีกี่ต้น?", a:420-140+60},
+  {t:"28) โกดัง A มีกล่อง 1,250 กล่อง โกดัง B มีมากกว่า A 175 กล่อง และโกดัง C น้อยกว่า B 90 กล่อง โกดัง C มีกี่กล่อง?", a:1250+175-90},
+  {t:"29) ตุ๊กตามี 325 ตัว ตี๋มีมากกว่าตุ๊กตา 155 ตัว ต่อมานำตุ๊กตาของตี๋ไปบริจาค 80 ตัว ตอนนี้ตี๋เหลือกี่ตัว?", a:325+155-80},
+  {t:"30) กีฬาสี: สีแดงมี 875 แต้ม สีน้ำเงินน้อยกว่าสีแดง 230 แต้ม สีเหลืองมากกว่าสีน้ำเงิน 115 แต้ม สีเหลืองมีแต้มกี่แต้ม?", a:875-230+115}
+];
+
+// ============== STATE ==============
+const KEY_PREFIX = "KruPai::mathP4_compare_v1";
+
+function normalizeNumber(s){
+  if(s==null) return null;
+  return s.toString().replace(/[, ]/g,'').trim();
+}
+let player={name:"นักเรียน"};
+let attemptNo=1;
+
+function nowString(){
+  const d = new Date();
+  const pad = (n)=>n.toString().padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function getHistory(name){
+  try{
+    const raw = localStorage.getItem(`${KEY_PREFIX}:${name}`);
+    return raw? JSON.parse(raw): [];
+  }catch(e){ return []; }
+}
+function saveHistory(name, arr){
+  try{
+    localStorage.setItem(`${KEY_PREFIX}:${name}`, JSON.stringify(arr));
+  }catch(e){}
+}
+
+function startQuiz(){
+  const name=document.getElementById('playerName').value.trim();
+  player.name=name||"นักเรียน";
+  const hist = getHistory(player.name);
+  attemptNo = hist.length + 1;
+  document.getElementById('welcome').style.display='none';
+  buildQuiz(hist);
+}
+
+function buildQuiz(hist){
+  const box=document.getElementById('quizBox');
+  box.style.display='block';
+  box.innerHTML='';
+
+  const head=document.createElement('div'); head.className='footer';
+  head.innerHTML=`<span class="pill">ผู้ทำ: ${player.name}</span>
+                  <span class="pill">ครั้งที่: ${attemptNo}</span>
+                  <span class="pill">รวมข้อ: ${FILL.length + WORD.length} ข้อ</span>`;
+  box.appendChild(head);
+
+  const h1=document.createElement('h2'); h1.className='sectionHead';
+  h1.textContent="ส่วนที่ 1: เติมตัวเลข/ตัวแปร (10 ข้อ)";
+  box.appendChild(h1);
+
+  FILL.forEach((q,i)=>{
+    const wrap=document.createElement('div'); wrap.className='q'; wrap.dataset.section='fill'; wrap.dataset.index=i;
+    wrap.innerHTML=`<h3>${q.t}</h3>
+      <input type="text" placeholder="พิมพ์คำตอบเป็นตัวเลข"> <span class="tag">เลข 2–4 หลัก</span>`;
+    box.appendChild(wrap);
+  });
+
+  const h2=document.createElement('h2'); h2.className='sectionHead';
+  h2.textContent="ส่วนที่ 2: โจทย์ 'มากกว่า/น้อยกว่า' (20 ข้อ)";
+  box.appendChild(h2);
+
+  WORD.forEach((q,i)=>{
+    const wrap=document.createElement('div'); wrap.className='q'; wrap.dataset.section='word'; wrap.dataset.index=i;
+    wrap.innerHTML=`<h3>${q.t}</h3>
+      <input type="text" placeholder="ตอบเป็นตัวเลขเท่านั้น">`;
+    box.appendChild(wrap);
+  });
+
+  const foot=document.createElement('div'); foot.className='footer';
+  const back=document.createElement('button'); back.className='btn-outline'; back.textContent='กลับหน้าแรก';
+  back.onclick=()=>{document.getElementById('quizBox').style.display='none';document.getElementById('welcome').style.display='flex'; window.scrollTo({top:0,behavior:'smooth'})}
+  const submit=document.createElement('button'); submit.className='btn'; submit.textContent='ตรวจคำตอบ & บันทึกประวัติ'; submit.onclick=()=>gradeQuiz();
+  foot.append(back,submit); box.appendChild(foot);
+
+  // Show history (if any)
+  if(hist && hist.length){
+    const histBox=document.createElement('div'); histBox.className='history';
+    histBox.innerHTML=`<h3 style="margin:0 0 8px 0">ประวัติการทำของชื่อ “${player.name}”</h3>`;
+    const table=document.createElement('table');
+    table.innerHTML=`<thead><tr><th>ครั้งที่</th><th>วันเวลา</th><th>คะแนน (ถูก/รวม)</th><th>%</th></tr></thead><tbody></tbody>`;
+    const tbody=table.querySelector('tbody');
+    hist.forEach((rec,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${i+1}</td><td>${rec.time}</td><td>${rec.correct} / ${rec.total}</td><td>${rec.percent}%</td>`;
+      tbody.appendChild(tr);
+    });
+    const clr=document.createElement('button'); clr.className='btn-outline'; clr.textContent='ล้างประวัติของชื่อนี้';
+    clr.onclick=()=>{ if(confirm('ต้องการลบประวัติทั้งหมดของชื่อนี้หรือไม่?')){ saveHistory(player.name, []); location.reload(); } };
+    histBox.appendChild(table); histBox.appendChild(clr);
+    box.appendChild(histBox);
+  }
+}
+
+function gradeQuiz(){
+  let correct=0, total=0;
+  document.querySelectorAll('.q').forEach((wrap)=>{
+    const section=wrap.dataset.section;
+    const idx=parseInt(wrap.dataset.index);
+    const inp=wrap.querySelector('input');
+    const val = normalizeNumber(inp.value);
+    const exp=document.createElement('div'); exp.className='explain';
+
+    total++;
+    let ans=null;
+    if(section==='fill') ans = FILL[idx].a;
+    else if(section==='word') ans = WORD[idx].a;
+
+    if(val===''||val==null){ exp.innerHTML='ยังไม่ได้กรอกคำตอบ'; wrap.appendChild(exp); return; }
+
+    if(Number(val)===Number(ans)){
+      correct++; exp.innerHTML='✓ ถูกต้อง'; exp.style.color='var(--success)';
+    }else{
+      exp.innerHTML=`✗ ไม่ถูก — เฉลย: <b>${ans}</b>`; exp.style.color='var(--danger)';
+    }
+    wrap.appendChild(exp);
+  });
+
+  const percent=Math.round((correct/total)*100);
+  const pass=percent>=80;
+
+  // Save history
+  const rec={time:nowString(), correct, total, percent};
+  const hist=getHistory(player.name);
+  hist.push(rec);
+  saveHistory(player.name, hist);
+
+  const res=document.getElementById('resultBox'); res.style.display='block';
+  res.innerHTML=`
+    <h2>สรุปคะแนนของ <span style="font-weight:900">${player.name}</span> (ครั้งที่ ${hist.length})</h2>
+    <p class="big ${pass?'pass':'fail'}">${correct} / ${total} (${percent}%) — ${pass?'ผ่าน ✅':'ไม่ผ่าน ❌'}</p>
+    <p>บันทึกผลแล้ว • เลื่อนกลับไปดูเฉลยรายข้อได้</p>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">เลื่อนกลับไปดูเฉลย</button>
+      <button class="btn-outline" onclick="location.reload()">ทำใหม่ (เป็นครั้งถัดไป)</button>
+    </div>
+    <div class="history">
+      <h3 style="margin:6px 0 8px 0">ประวัติของชื่อ “${player.name}”</h3>
+      ${renderHistoryTable(hist)}
+    </div>
+    <p style="margin-top:10px;color:#6b7280">* ระบบประวัติใช้ <b>เครื่องนี้และเบราว์เซอร์นี้</b> เท่านั้น (localStorage)</p>
+  `;
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+function renderHistoryTable(hist){
+  let rows = hist.map((rec,i)=>`<tr><td>${i+1}</td><td>${rec.time}</td><td>${rec.correct} / ${rec.total}</td><td>${rec.percent}%</td></tr>`).join('');
+  return `<table><thead><tr><th>ครั้งที่</th><th>วันเวลา</th><th>คะแนน (ถูก/รวม)</th><th>%</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+</script>
+</body>
+</html>
